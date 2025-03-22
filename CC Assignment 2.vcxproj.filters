@@ -27,11 +27,25 @@
     <ClCompile Include="leftrecursion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ll_1_parser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="cfg.txt">
+    <Text Include="cfg1.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="cfg2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="cfg3.txt" />
+    <Text Include="cfg4.txt" />
+    <Text Include="cfg5.txt" />
+    <Text Include="cfg6.txt" />
+    <Text Include="cfg7.txt" />
+    <Text Include="cfg8.txt" />
+    <Text Include="cfg9.txt" />
+    <Text Include="cfg10.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="leftfactoring.h">
@@ -41,6 +55,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="leftrecursion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ll_1_parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

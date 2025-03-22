@@ -4,12 +4,14 @@ cfg::cfg(string filename) {
 	this->filename = filename;
 	this->lfc = nullptr;
 	this->lfr = nullptr;
+	this->parser = nullptr;
 	this->production_lines.assign(0, "");
 }
 
 cfg::~cfg() {
 	delete(this->lfc);
 	delete(this->lfr);
+	delete(this->parser);
 }
 
 void cfg::preprocessCFG() {
@@ -59,20 +61,11 @@ bool cfg::readFile() {
 	return true;
 }
 
-void cfg::displayFirstSet() {
-
-}
-
-void cfg::displayFollowSet() {
-
-}
-
-void cfg::displayParsingTable() {
-
-}
-
-void cfg::displayProductions() {
-	cout << "Productions:" << endl;
+void cfg::displayProductions(bool flag = false) {
+	if (flag)
+		cout << "Initial Productions:" << endl;
+	else
+		cout << "Final Productions:" << endl;
 	// Iterate over the map where each key is a non-terminal and the value is a vector of productions.
 	for (const auto& entry : this->productions) {
 		cout << entry.first << " -> ";
@@ -83,14 +76,19 @@ void cfg::displayProductions() {
 		}
 		cout << endl;
 	}
+	cout << endl;
 }
 
 void cfg::build() {
 	if (!this->readFile()) return;
 	this->preprocessCFG();
+	this->displayProductions(true);
 	this->lfc = new leftfactoring(this->productions);
 	this->lfc->applyLeftFactoring();
 	this->lfr = new leftrecursion(this->productions);
 	this->lfr->removeLeftRecursion();
+	this->parser = new ll_1_parser(this->productions);
+	this->parser->parse();
 	this->displayProductions();
+	this->parser->display();
 }

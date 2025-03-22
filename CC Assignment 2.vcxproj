@@ -132,15 +132,27 @@
     <ClCompile Include="cfg.cpp" />
     <ClCompile Include="leftfactoring.cpp" />
     <ClCompile Include="leftrecursion.cpp" />
+    <ClCompile Include="ll_1_parser.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="cfg.txt" />
+    <Text Include="cfg1.txt" />
+    <Text Include="cfg10.txt" />
+    <Text Include="cfg2.txt" />
+    <Text Include="cfg3.txt" />
+    <Text Include="cfg4.txt" />
+    <Text Include="cfg5.txt" />
+    <Text Include="cfg6.txt" />
+    <Text Include="cfg7.txt" />
+    <Text Include="cfg8.txt" />
+    <Text Include="cfg9.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cfg.h" />
     <ClInclude Include="leftfactoring.h" />
     <ClInclude Include="leftrecursion.h" />
+    <ClInclude Include="ll_1_parser.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

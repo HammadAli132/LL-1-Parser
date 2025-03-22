@@ -1,6 +1,7 @@
 #pragma once
 #include "leftfactoring.h"
 #include "leftrecursion.h"
+#include "ll_1_parser.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -14,15 +15,13 @@ class cfg {
 private:
 	leftfactoring *lfc;
 	leftrecursion *lfr;
+	ll_1_parser *parser;
 	string filename;
 	map<string, vector<string>> productions;
 	vector<string> production_lines;
 
 	void preprocessCFG();
-	void displayProductions();
-	void displayParsingTable();
-	void displayFirstSet();
-	void displayFollowSet();
+	void displayProductions(bool);
 	bool readFile();
 
 public:
