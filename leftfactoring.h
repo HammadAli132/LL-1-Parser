@@ -9,10 +9,10 @@ using namespace std;
 
 class leftfactoring {
 private:
-	unordered_map<string, vector<string>> &productions;
+	unordered_map<string, vector<vector<string>>> &productions;
 
 public:
-	leftfactoring(unordered_map<string, vector<string>>& prod);
+	leftfactoring(unordered_map<string, vector<vector<string>>>& prod);
 	~leftfactoring();
 
 	void applyLeftFactoring();

@@ -9,10 +9,10 @@ using namespace std;
 
 class leftrecursion {
 private:
-	unordered_map<string, vector<string>>& productions;
+	unordered_map<string, vector<vector<string>>> &productions;
 
 public:
-	leftrecursion(unordered_map<string, vector<string>>& prod);
+	leftrecursion(unordered_map<string, vector<vector<string>>>& prod);
 	~leftrecursion();
 
 	void removeLeftRecursion();

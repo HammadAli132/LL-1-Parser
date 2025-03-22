@@ -1,7 +1,7 @@
-S~A|B
-A~Aa|Ab|c
-B~Bb|Bc|d
-C~Cc|Cd|e
-D~Dd|De|f
-E~Ee|Ef|g
-F~Ff|Fg|h
+S -> A | B
+A -> A a | A b | c
+B -> B b | B c | d
+C -> C c | C d | e
+D -> D d | D e | f
+E -> E e | E f | g
+F -> F f | F g | h

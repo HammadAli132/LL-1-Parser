@@ -1,3 +1,5 @@
-﻿S~AB
-A~aA|?
-B~bB|?
+﻿S -> A B  
+A -> a A  
+A -> a B  
+B -> b B  
+B -> c  

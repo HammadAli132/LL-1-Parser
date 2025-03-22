@@ -1,6 +1,5 @@
-S~A|B
-A~Ab|aA|c
-B~Bd|eB|f
-C~Cg|hC|i
-D~Dj|kD|l
-E~Em|nE|o
+S -> A B  
+A -> a A  
+A -> b  
+B -> c B  
+B -> d  

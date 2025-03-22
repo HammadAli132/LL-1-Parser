@@ -1,63 +1,54 @@
 ﻿#include "ll_1_parser.h"
 
-ll_1_parser::ll_1_parser(unordered_map<string, vector<string>> prod) : productions(prod) {}
+ll_1_parser::ll_1_parser(unordered_map<string, vector<vector<string>>> prod) : productions(prod) {}
 
 ll_1_parser::~ll_1_parser() {
 	cout << "Destructing LL(1) Parser" << endl;
 }
 
-static vector<string> tokenizeProduction(const string& production) {
-    vector<string> tokens;
-    size_t i = 0;
-    while (i < production.size()) {
-        char c = production[i];
-        // If uppercase, assume a nonterminal.
-        if (isupper(c)) {
-            string token;
-            token.push_back(c);
-            i++;
-            // Append subsequent apostrophes or tildes.
-            while (i < production.size() && (production[i] == '\'' || production[i] == '`')) {
-                token.push_back(production[i]);
-                i++;
-            }
-            tokens.push_back(token);
-        }
-        else {
-            // Otherwise, assume it's a terminal (single lowercase character).
-            tokens.push_back(string(1, c));
-            i++;
-        }
+// Helper function to compute the longest common prefix between two token vectors.
+static vector<string> commonPrefixTokens(const vector<string>& t1, const vector<string>& t2) {
+    vector<string> result;
+    size_t n = min(t1.size(), t2.size());
+    for (size_t i = 0; i < n; ++i) {
+        if (t1[i] == t2[i])
+            result.push_back(t1[i]);
+        else
+            break;
     }
-    return tokens;
+    return result;
 }
 
-static set<string> computeFirstForTokens(const vector<string>& tokens, const unordered_map<string, vector<string>>& productions, const unordered_map<string, set<string>>& first_sets) {
+// Updated computeFirstForTokens uses productions of type unordered_map<string, vector<vector<string>>>
+static set<string> computeFirstForTokens(
+    const vector<string>& tokens,
+    const unordered_map<string, vector<vector<string>>>& productions,
+    const unordered_map<string, set<string>>& first_sets)
+{
     set<string> result;
     bool allHaveEpsilon = true;
-
     for (const auto& symbol : tokens) {
-        // If the symbol is terminal (i.e. not found as a key), add it and stop.
+        // If symbol is terminal (i.e. not a key in productions), add it and stop.
         if (productions.find(symbol) == productions.end()) {
             result.insert(symbol);
             allHaveEpsilon = false;
             break;
         }
         else {
-            // Symbol is nonterminal: add FIRST(symbol) except epsilon.
+            // symbol is nonterminal: add FIRST(symbol) except epsilon.
             for (const auto& s : first_sets.at(symbol)) {
-                if (s != "ε")
+                if (s != "?")
                     result.insert(s);
             }
-            // If the FIRST set of this nonterminal does not contain epsilon, stop.
-            if (first_sets.at(symbol).find("ε") == first_sets.at(symbol).end()) {
+            // If the FIRST set for this nonterminal does not contain epsilon, stop.
+            if (first_sets.at(symbol).find("?") == first_sets.at(symbol).end()) {
                 allHaveEpsilon = false;
                 break;
             }
         }
     }
     if (allHaveEpsilon)
-        result.insert("ε");
+        result.insert("?");
     return result;
 }
 
@@ -67,18 +58,15 @@ void ll_1_parser::constructFirstSets() {
         this->first_sets[prod.first] = set<string>();
 
     bool changed = true;
-    // Iteratively update FIRST sets until no changes occur.
     while (changed) {
         changed = false;
         // For each nonterminal A.
         for (const auto& entry : productions) {
             string A = entry.first;
-            // For each production A -> α.
+            // For each production alternative A -> α (already tokenized).
             for (const auto& production : entry.second) {
-                vector<string> tokens = tokenizeProduction(production);
                 bool allCanBeEpsilon = true;
-                // Process tokens one by one.
-                for (const auto& symbol : tokens) {
+                for (const auto& symbol : production) {
                     // If symbol is terminal.
                     if (productions.find(symbol) == productions.end()) {
                         if (first_sets[A].find(symbol) == first_sets[A].end()) {
@@ -89,26 +77,22 @@ void ll_1_parser::constructFirstSets() {
                         break;
                     }
                     else {
-                        // Symbol is nonterminal: add FIRST(symbol) except epsilon.
+                        // symbol is nonterminal: add FIRST(symbol) except epsilon.
                         for (const auto& s : first_sets[symbol]) {
-                            if (s != "ε" && first_sets[A].find(s) == first_sets[A].end()) {
+                            if (s != "?" && first_sets[A].find(s) == first_sets[A].end()) {
                                 first_sets[A].insert(s);
                                 changed = true;
                             }
                         }
-                        // If symbol’s FIRST set does not contain epsilon, stop.
-                        if (first_sets[symbol].find("ε") == first_sets[symbol].end()) {
+                        if (first_sets[symbol].find("?") == first_sets[symbol].end()) {
                             allCanBeEpsilon = false;
                             break;
                         }
                     }
                 }
-                // If all tokens can derive epsilon, add epsilon.
-                if (allCanBeEpsilon) {
-                    if (first_sets[A].find("ε") == first_sets[A].end()) {
-                        first_sets[A].insert("ε");
-                        changed = true;
-                    }
+                if (allCanBeEpsilon && first_sets[A].find("?") == first_sets[A].end()) {
+                    first_sets[A].insert("?");
+                    changed = true;
                 }
             }
         }
@@ -120,8 +104,7 @@ void ll_1_parser::constructFollowSets() {
     for (const auto& prod : this->productions)
         this->follow_sets[prod.first] = set<string>();
 
-    // Assume the start symbol is the first nonterminal in the map.
-    // Add the end-of-input marker '$' to its FOLLOW set.
+    // Assume the start symbol is the first nonterminal; add '$' to its FOLLOW set.
     if (!productions.empty())
         follow_sets.begin()->second.insert("$");
 
@@ -132,16 +115,15 @@ void ll_1_parser::constructFollowSets() {
         for (const auto& entry : productions) {
             string A = entry.first;
             for (const auto& production : entry.second) {
-                vector<string> tokens = tokenizeProduction(production);
-                for (size_t i = 0; i < tokens.size(); i++) {
-                    string symbol = tokens[i];
+                for (size_t i = 0; i < production.size(); i++) {
+                    string symbol = production[i];
                     // Process only if symbol is a nonterminal.
                     if (productions.find(symbol) != productions.end()) {
                         bool allSuffixCanBeEpsilon = true;
-                        // Consider the remainder β after symbol.
-                        for (size_t j = i + 1; j < tokens.size(); j++) {
-                            string nextSymbol = tokens[j];
-                            // If terminal, add it directly.
+                        // Examine the remainder β after symbol.
+                        for (size_t j = i + 1; j < production.size(); j++) {
+                            string nextSymbol = production[j];
+                            // If terminal, add it to FOLLOW(symbol).
                             if (productions.find(nextSymbol) == productions.end()) {
                                 if (follow_sets[symbol].find(nextSymbol) == follow_sets[symbol].end()) {
                                     follow_sets[symbol].insert(nextSymbol);
@@ -153,19 +135,17 @@ void ll_1_parser::constructFollowSets() {
                             else {
                                 // Add FIRST(nextSymbol) except epsilon.
                                 for (const auto& s : first_sets[nextSymbol]) {
-                                    if (s != "ε" && follow_sets[symbol].find(s) == follow_sets[symbol].end()) {
+                                    if (s != "?" && follow_sets[symbol].find(s) == follow_sets[symbol].end()) {
                                         follow_sets[symbol].insert(s);
                                         changed = true;
                                     }
                                 }
-                                // If nextSymbol’s FIRST does not include epsilon, stop.
-                                if (first_sets[nextSymbol].find("ε") == first_sets[nextSymbol].end()) {
+                                if (first_sets[nextSymbol].find("?") == first_sets[nextSymbol].end()) {
                                     allSuffixCanBeEpsilon = false;
                                     break;
                                 }
                             }
                         }
-                        // If every symbol in the suffix can derive epsilon, add FOLLOW(A) to FOLLOW(symbol).
                         if (allSuffixCanBeEpsilon) {
                             for (const auto& s : follow_sets[A]) {
                                 if (follow_sets[symbol].find(s) == follow_sets[symbol].end()) {
@@ -186,18 +166,20 @@ void ll_1_parser::constructParseTable() {
     for (const auto& entry : productions) {
         string A = entry.first;
         for (const auto& production : entry.second) {
-            vector<string> tokens = tokenizeProduction(production);
-            // Compute FIRST(α) for the tokenized production.
-            set<string> firstAlpha = computeFirstForTokens(tokens, productions, first_sets);
-            // For every terminal in FIRST(α) except epsilon, add the production to the table.
-            for (const auto& terminal : firstAlpha) {
-                if (terminal != "ε")
-                    parse_table[A][terminal] = production;
+            // production is already tokenized (vector<string>).
+            set<string> firstAlpha = computeFirstForTokens(production, productions, first_sets);
+            // Convert production tokens back to a string for the parse table.
+            string productionStr;
+            for (size_t i = 0; i < production.size(); i++) {
+                productionStr += production[i] + (i < production.size() - 1 ? " " : "");
             }
-            // If FIRST(α) contains epsilon, add the production for every terminal in FOLLOW(A).
-            if (firstAlpha.find("ε") != firstAlpha.end()) {
+            for (const auto& terminal : firstAlpha) {
+                if (terminal != "?")
+                    parse_table[A][terminal] = productionStr;
+            }
+            if (firstAlpha.find("?") != firstAlpha.end()) {
                 for (const auto& terminal : follow_sets[A]) {
-                    parse_table[A][terminal] = production;
+                    parse_table[A][terminal] = productionStr;
                 }
             }
         }

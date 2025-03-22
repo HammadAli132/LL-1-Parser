@@ -1,3 +1,4 @@
-A~Ab|iefa
-A~Ac|iefb
-A~Ad|iefc
+﻿S -> A B  
+A -> a A | ?  
+B -> b B  
+B -> ?  

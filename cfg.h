@@ -17,7 +17,7 @@ private:
 	leftrecursion *lfr;
 	ll_1_parser *parser;
 	string filename;
-	unordered_map<string, vector<string>> productions;
+	unordered_map<string, vector<vector<string>>> productions;
 	vector<string> production_lines;
 
 	void preprocessCFG();

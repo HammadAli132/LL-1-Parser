@@ -1,3 +1,5 @@
-S~aA|aB
-A~bA|c
-B~dB|e
+S -> A B  
+A -> A a  
+A -> b  
+B -> B c  
+B -> d  

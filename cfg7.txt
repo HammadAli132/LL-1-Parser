@@ -1,6 +1,7 @@
-﻿S~A|B
-A~aA|aB|?
-B~bB|cC|?
-C~cC|dD|?
-D~dD|eE|?
-E~eE|f|?
+﻿S -> A B C  
+A -> a A  
+A -> b  
+B -> c B  
+B -> d  
+C -> e C  
+C -> f  

@@ -1,3 +1,7 @@
-S~aAb|cBd
-A~eA|f
-B~gB|h
+﻿S -> A B  
+A -> B C  
+B -> C D  
+C -> c C  
+C -> ?  
+D -> d D  
+D -> ?  
