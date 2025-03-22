@@ -1,6 +1,6 @@
 ﻿#include "leftfactoring.h"
 
-leftfactoring::leftfactoring(map<string, vector<string>> &prod) : productions(prod) {}
+leftfactoring::leftfactoring(unordered_map<string, vector<string>> &prod) : productions(prod) {}
 
 leftfactoring::~leftfactoring() {
 	cout << "Destructing Left Factoring" << endl;

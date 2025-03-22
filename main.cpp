@@ -3,7 +3,7 @@
 using namespace std;
 
 int main() {
-	string filename = "D:\\VS Projects\\CC Assignment 2\\cfg2.txt";
+	string filename = "D:\\VS Projects\\CC Assignment 2\\cfg4.txt";
 
 	cfg *cfgObj = new cfg(filename);
 	cfgObj->build();

@@ -1,6 +1,6 @@
 ﻿#include "ll_1_parser.h"
 
-ll_1_parser::ll_1_parser(map<string, vector<string>> prod) : productions(prod) {}
+ll_1_parser::ll_1_parser(unordered_map<string, vector<string>> prod) : productions(prod) {}
 
 ll_1_parser::~ll_1_parser() {
 	cout << "Destructing LL(1) Parser" << endl;
@@ -32,7 +32,7 @@ static vector<string> tokenizeProduction(const string& production) {
     return tokens;
 }
 
-static set<string> computeFirstForTokens(const vector<string>& tokens, const map<string, vector<string>>& productions, const map<string, set<string>>& first_sets) {
+static set<string> computeFirstForTokens(const vector<string>& tokens, const unordered_map<string, vector<string>>& productions, const unordered_map<string, set<string>>& first_sets) {
     set<string> result;
     bool allHaveEpsilon = true;
 

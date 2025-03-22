@@ -7,7 +7,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <map>
+#include <unordered_map>
 
 using namespace std;
 
@@ -17,7 +17,7 @@ private:
 	leftrecursion *lfr;
 	ll_1_parser *parser;
 	string filename;
-	map<string, vector<string>> productions;
+	unordered_map<string, vector<string>> productions;
 	vector<string> production_lines;
 
 	void preprocessCFG();
