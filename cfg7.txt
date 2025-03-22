@@ -1,3 +1,6 @@
-S~A
-A~B
-B~bB|c
+﻿S~A|B
+A~aA|aB|?
+B~bB|cC|?
+C~cC|dD|?
+D~dD|eE|?
+E~eE|f|?

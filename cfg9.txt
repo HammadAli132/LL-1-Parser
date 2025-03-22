@@ -1,3 +1,6 @@
-S~aAb|cBd
-A~eA|f
-B~gB|h
+S~A|B
+A~Aa|bA|c
+B~Bb|dB|e
+C~Cc|fC|g
+D~Dd|hD|i
+E~Ee|jE|k
