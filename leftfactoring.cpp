@@ -74,4 +74,17 @@ void leftfactoring::applyLeftFactoring() {
         // Update the productions for nt with the newly factored productions.
         this->productions[nt] = new_prods;
     }
+
+    cout << "Left Factored Productions:" << endl;
+    // Iterate over the map where each key is a non-terminal and the value is a vector of productions.
+    for (const auto& entry : this->productions) {
+        cout << entry.first << " -> ";
+        for (size_t i = 0; i < entry.second.size(); ++i) {
+            cout << entry.second[i];
+            if (i != entry.second.size() - 1)
+                cout << "|";
+        }
+        cout << endl;
+    }
+    cout << endl;
 }
