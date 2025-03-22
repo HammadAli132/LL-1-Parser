@@ -28,6 +28,7 @@ void leftfactoring::applyLeftFactoring() {
         sort(prods.begin(), prods.end());
         vector<string> new_prods; // Will hold the updated productions for nt.
         size_t i = 0;
+        string new_NT = nt;
         while (i < prods.size()) {
             // Start a new group with the current production.
             string group_common = prods[i];
@@ -47,8 +48,9 @@ void leftfactoring::applyLeftFactoring() {
             }
             // If more than one production shares a common prefix, factor them.
             if (group.size() > 1 && group_common.size() > 0) {
-                // Generate a new nonterminal (simple generator using a static char).
-                string new_non_terminal = nt + '`';
+                // Generate a new nonterminal
+                string new_non_terminal = new_NT + '`';
+                new_NT = new_non_terminal;
 
                 vector<string> new_NT_productions; // Productions for the new nonterminal.
                 for (auto& p : group) {
