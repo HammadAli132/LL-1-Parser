@@ -3,11 +3,13 @@
 cfg::cfg(string filename) {
 	this->filename = filename;
 	this->lfc = nullptr;
+	this->lfr = nullptr;
 	this->production_lines.assign(0, "");
 }
 
 cfg::~cfg() {
 	delete(this->lfc);
+	delete(this->lfr);
 }
 
 void cfg::preprocessCFG() {
@@ -88,5 +90,7 @@ void cfg::build() {
 	this->preprocessCFG();
 	this->lfc = new leftfactoring(this->productions);
 	this->lfc->applyLeftFactoring();
+	this->lfr = new leftrecursion(this->productions);
+	this->lfr->removeLeftRecursion();
 	this->displayProductions();
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "leftfactoring.h"
+#include "leftrecursion.h"
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -12,6 +13,7 @@ using namespace std;
 class cfg {
 private:
 	leftfactoring *lfc;
+	leftrecursion *lfr;
 	string filename;
 	map<string, vector<string>> productions;
 	vector<string> production_lines;
