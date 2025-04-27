@@ -4,15 +4,16 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 
 class leftfactoring {
 private:
-	unordered_map<string, vector<vector<string>>> &productions;
+	vector<pair<string, vector<vector<string>>>>& productions;
 
 public:
-	leftfactoring(unordered_map<string, vector<vector<string>>>& prod);
+	leftfactoring(vector<pair<string, vector<vector<string>>>>& prod);
 	~leftfactoring();
 
 	void applyLeftFactoring();

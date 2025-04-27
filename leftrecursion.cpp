@@ -1,6 +1,6 @@
 ﻿#include "leftrecursion.h"
 
-leftrecursion::leftrecursion(unordered_map<string, vector<vector<string>>>& prod) : productions(prod) {}
+leftrecursion::leftrecursion(vector<pair<string, vector<vector<string>>>>& prod) : productions(prod) {}
 
 leftrecursion::~leftrecursion() {
 	cout << "Destructing Left Recursion" << endl;
@@ -15,7 +15,13 @@ void leftrecursion::removeLeftRecursion() {
     // Process each nonterminal.
     for (const auto& nt : non_terminals) {
         // Get productions for nt (each production is now a vector<string>).
-        vector<vector<string>> prods = this->productions[nt];
+        vector<vector<string>> prods;
+        for (const auto& prod : this->productions) {
+            if (prod.first == nt) {
+                prods = prod.second;
+                break;
+            }
+        }
         vector<vector<string>> beta;      // Group for non-left recursive productions.
         vector<string> alpha;             // Left recursive production suffix (only one expected).
 
@@ -58,9 +64,19 @@ void leftrecursion::removeLeftRecursion() {
             new_NT_productions.push_back(vector<string>{"?"});
 
             // Update the productions for the original nonterminal.
-            this->productions[nt] = new_beta;
+            for (auto& prod : this->productions) {
+                if (prod.first == nt) {
+                    prod.second = new_beta;
+                    break;
+                }
+            }
             // Add the new nonterminal and its productions.
-            this->productions[new_NT] = new_NT_productions;
+            for (auto& prod : this->productions) {
+                if (prod.first == new_NT) {
+                    prod.second = new_NT_productions;
+                    break;
+                }
+            }
         }
         // If no left recursion was found, leave productions unchanged.
     }

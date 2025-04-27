@@ -1,6 +1,6 @@
 ﻿#include "ll_1_parser.h"
 
-ll_1_parser::ll_1_parser(unordered_map<string, vector<vector<string>>> prod) : productions(prod) {}
+ll_1_parser::ll_1_parser(vector<pair<string, vector<vector<string>>>> prod) : productions(prod) {}
 
 ll_1_parser::~ll_1_parser() {
 	cout << "Destructing LL(1) Parser" << endl;
@@ -19,17 +19,24 @@ static vector<string> commonPrefixTokens(const vector<string>& t1, const vector<
     return result;
 }
 
-// Updated computeFirstForTokens uses productions of type unordered_map<string, vector<vector<string>>>
+// Updated computeFirstForTokens uses productions of type vector<pair<string, vector<vector<string>>>>
 static set<string> computeFirstForTokens(
     const vector<string>& tokens,
-    const unordered_map<string, vector<vector<string>>>& productions,
+    const vector<pair<string, vector<vector<string>>>>& productions,
     const unordered_map<string, set<string>>& first_sets)
 {
     set<string> result;
     bool allHaveEpsilon = true;
     for (const auto& symbol : tokens) {
         // If symbol is terminal (i.e. not a key in productions), add it and stop.
-        if (productions.find(symbol) == productions.end()) {
+        bool symbolExists = false;
+        for (const auto& prod : productions) {
+            if (prod.first == symbol) {
+                symbolExists = true;
+                break;
+            }
+        }
+        if (!symbolExists) {
             result.insert(symbol);
             allHaveEpsilon = false;
             break;
@@ -68,7 +75,14 @@ void ll_1_parser::constructFirstSets() {
                 bool allCanBeEpsilon = true;
                 for (const auto& symbol : production) {
                     // If symbol is terminal.
-                    if (productions.find(symbol) == productions.end()) {
+                    bool symbolExists = false;
+                    for (const auto& prod : productions) {
+                        if (prod.first == symbol) {
+                            symbolExists = true;
+                            break;
+                        }
+                    }
+                    if (!symbolExists) {
                         if (first_sets[A].find(symbol) == first_sets[A].end()) {
                             first_sets[A].insert(symbol);
                             changed = true;
@@ -106,7 +120,7 @@ void ll_1_parser::constructFollowSets() {
 
     // Assume the start symbol is the first nonterminal; add '$' to its FOLLOW set.
     if (!productions.empty())
-        follow_sets.begin()->second.insert("$");
+        follow_sets[productions[0].first].insert("$");
 
     bool changed = true;
     while (changed) {
@@ -118,13 +132,27 @@ void ll_1_parser::constructFollowSets() {
                 for (size_t i = 0; i < production.size(); i++) {
                     string symbol = production[i];
                     // Process only if symbol is a nonterminal.
-                    if (productions.find(symbol) != productions.end()) {
+                    bool symbolExists = false;
+                    for (const auto& prod : productions) {
+                        if (prod.first == symbol) {
+                            symbolExists = true;
+                            break;
+                        }
+                    }
+                    if (symbolExists) {
                         bool allSuffixCanBeEpsilon = true;
                         // Examine the remainder β after symbol.
                         for (size_t j = i + 1; j < production.size(); j++) {
                             string nextSymbol = production[j];
                             // If terminal, add it to FOLLOW(symbol).
-                            if (productions.find(nextSymbol) == productions.end()) {
+                            symbolExists = false;
+                            for (const auto& prod : productions) {
+                                if (prod.first == nextSymbol) {
+                                    symbolExists = true;
+                                    break;
+                                }
+                            }
+                            if (!symbolExists) {
                                 if (follow_sets[symbol].find(nextSymbol) == follow_sets[symbol].end()) {
                                     follow_sets[symbol].insert(nextSymbol);
                                     changed = true;
@@ -173,13 +201,20 @@ void ll_1_parser::constructParseTable() {
             for (size_t i = 0; i < production.size(); i++) {
                 productionStr += production[i] + (i < production.size() - 1 ? " " : "");
             }
+
+            // Add entries for terminals in FIRST(α)
             for (const auto& terminal : firstAlpha) {
                 if (terminal != "?")
                     parse_table[A][terminal] = productionStr;
             }
+
+            // If α can derive epsilon, add entries for terminals in FOLLOW(A)
             if (firstAlpha.find("?") != firstAlpha.end()) {
                 for (const auto& terminal : follow_sets[A]) {
-                    parse_table[A][terminal] = productionStr;
+                    // Don't overwrite existing entries (this handles conflicts)
+                    if (parse_table[A].find(terminal) == parse_table[A].end()) {
+                        parse_table[A][terminal] = productionStr;
+                    }
                 }
             }
         }

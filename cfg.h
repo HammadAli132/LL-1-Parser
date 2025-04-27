@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <set>
 #include "leftfactoring.h"
 #include "leftrecursion.h"
 #include "ll_1_parser.h"
@@ -17,7 +18,7 @@ class cfg {
 private:
 	string filename;
 	vector<string> production_lines;
-	unordered_map<string, vector<vector<string>>> productions;
+	vector<pair<string, vector<vector<string>>>> productions;
 	leftfactoring* lfc;
 	leftrecursion* lfr;
 	ll_1_parser* parser;

@@ -61,13 +61,17 @@ void cfg::preprocessCFG() {
 		}
 
 		// Insert or append the alternatives into the productions map.
-		if (this->productions.find(non_terminal) != this->productions.end()) {
-			for (const auto& alt : alternatives)
-				this->productions[non_terminal].push_back(alt);
+		bool inserted = false;
+		for (auto& prod : this->productions) {
+			if (prod.first == non_terminal) {
+				for (const auto& alt : alternatives)
+					prod.second.push_back(alt);
+				inserted = true;
+				break;
+			}
 		}
-		else {
-			this->productions.emplace(non_terminal, alternatives);
-		}
+		if (!inserted)
+			this->productions.push_back(make_pair(non_terminal, alternatives));
 	}
 }
 

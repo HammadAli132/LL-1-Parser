@@ -13,13 +13,13 @@ using namespace std;
 
 class ll_1_parser {
 private:
-	unordered_map<string, vector<vector<string>>> productions;
+	vector<pair<string, vector<vector<string>>>> productions;
 	unordered_map<string, set<string>> first_sets;
 	unordered_map<string, set<string>> follow_sets;
 	unordered_map<string, unordered_map<string, string>> parse_table;
 
 public:
-	ll_1_parser(unordered_map<string, vector<vector<string>>> prod);
+	ll_1_parser(vector<pair<string, vector<vector<string>>>> prod);
 	~ll_1_parser();
 
 	void constructFirstSets();
@@ -35,10 +35,10 @@ public:
 
 	string getStartSymbol() const {
 		// Assuming the start symbol is the first production in the grammar
-		/*if (!productions.empty()) {
+		if (!productions.empty()) {
 			return productions.begin()->first;
-		}*/
-		return "program";
+		}
+		return "";
 	}
 };
 

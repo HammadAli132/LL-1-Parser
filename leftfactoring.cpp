@@ -1,6 +1,6 @@
 ﻿#include "leftfactoring.h"
 
-leftfactoring::leftfactoring(unordered_map<string, vector<vector<string>>> &prod) : productions(prod) {}
+leftfactoring::leftfactoring(vector<pair<string, vector<vector<string>>>>&prod) : productions(prod) {}
 
 leftfactoring::~leftfactoring() {
 	cout << "Destructing Left Factoring" << endl;
@@ -28,7 +28,13 @@ void leftfactoring::applyLeftFactoring() {
 
     // Process each nonterminal.
     for (const auto& nt : non_terminals) {
-        vector<vector<string>> prods = productions[nt];
+        vector<vector<string>> prods;
+        for (const auto& prod : this->productions) {
+            if (prod.first == nt) {
+                prods = prod.second;
+                break;
+            }
+        }
         // Sort production alternatives lexicographically.
         sort(prods.begin(), prods.end(), [](const vector<string>& a, const vector<string>& b) {
             // Compare by joining tokens with a space.
@@ -85,7 +91,11 @@ void leftfactoring::applyLeftFactoring() {
                 new_prods.push_back(factored);
 
                 // Save the new nonterminal's productions.
-                productions[new_non_terminal] = newNT_productions;
+                for (auto& prod : this->productions)
+                    if (prod.first == new_non_terminal) {
+                        prod.second = newNT_productions;
+                        break;
+                    }
             }
             else {
                 // Group contains a single production; add it unchanged.
@@ -94,7 +104,12 @@ void leftfactoring::applyLeftFactoring() {
             i = j;
         }
         // Update the productions for nt.
-        productions[nt] = new_prods;
+        for (auto& prod : this->productions) {
+            if (prod.first == nt) {
+                prod.second = new_prods;
+                break;
+            }
+        }
     }
 
     // Optionally, display the left factored productions.
