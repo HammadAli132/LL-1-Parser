@@ -1,4 +1,5 @@
 #include "cfg.h"
+#include "stringParser.h" // Include the new header
 
 cfg::cfg(string filename) {
 	this->filename = filename;
@@ -25,13 +26,13 @@ static inline string trim(const string& s) {
 
 void cfg::preprocessCFG() {
 	for (const auto& prod : this->production_lines) {
-		// Use " ~ " (space-tilde-space) as the delimiter to separate the nonterminal and the RHS.
-		size_t tildePos = prod.find(" -> ");
-		if (tildePos == string::npos)
+		// Using " -> " (space-tilde-space) as the delimiter to separate the nonterminal and the RHS.
+		size_t arrowPos = prod.find(" -> ");
+		if (arrowPos == string::npos)
 			continue;  // Skip if format is unexpected.
 
-		string non_terminal = trim(prod.substr(0, tildePos));
-		string rhs = trim(prod.substr(tildePos + 4)); // Skip over " -> "
+		string non_terminal = trim(prod.substr(0, arrowPos));
+		string rhs = trim(prod.substr(arrowPos + 4)); // Skip over " -> "
 
 		// Now, split the RHS on " | " (space-pipe-space) to get individual alternatives.
 		vector<vector<string>> alternatives;
@@ -80,8 +81,9 @@ bool cfg::readFile() {
 	}
 
 	while (getline(file, line))
-		this->production_lines.push_back(line);
-	
+		if (!line.empty())
+			this->production_lines.push_back(line);
+
 	file.close();
 
 	return true;
@@ -123,4 +125,22 @@ void cfg::build() {
 	this->parser->parse();
 	this->displayProductions();
 	this->parser->display();
+}
+
+// New method to parse input string using the parsing table
+bool cfg::parseInputStrings(const string& input_filename) {
+	if (!this->parser) {
+		cerr << "Error: Parser not initialized. Call build() first." << endl;
+		return false;
+	}
+
+	// Get the parse table from the LL(1) parser
+	auto parse_table = this->parser->getParseTable();
+	string start_symbol = this->parser->getStartSymbol();
+
+	// Create a string parser
+	string_parser strParser(parse_table, start_symbol, input_filename);
+
+	// Parse all strings in the input file
+	return strParser.parseInputFile();
 }

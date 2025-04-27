@@ -26,6 +26,9 @@
     <ClCompile Include="ll_1_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="stringParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="cfg3.txt" />
@@ -38,6 +41,7 @@
     <Text Include="cfg10.txt" />
     <Text Include="cfg2.txt" />
     <Text Include="cfg1.txt" />
+    <Text Include="input_strings.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="leftfactoring.h">
@@ -53,6 +57,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stringParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

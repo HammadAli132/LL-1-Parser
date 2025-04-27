@@ -1,10 +1,13 @@
-#pragma once
+#ifndef LL_1_PARSER_H
+#define LL_1_PARSER_H
+
 #include <iostream>
-#include <string>
-#include <vector>
-#include <algorithm>
 #include <unordered_map>
+#include <vector>
 #include <set>
+#include <string>
+#include <algorithm>
+#include <sstream>
 
 using namespace std;
 
@@ -15,14 +18,28 @@ private:
 	unordered_map<string, set<string>> follow_sets;
 	unordered_map<string, unordered_map<string, string>> parse_table;
 
-	void constructFirstSets();
-	void constructFollowSets();
-	void constructParseTable();
-
 public:
 	ll_1_parser(unordered_map<string, vector<vector<string>>> prod);
 	~ll_1_parser();
+
+	void constructFirstSets();
+	void constructFollowSets();
+	void constructParseTable();
 	void parse();
 	void display();
+
+	// New methods to access parser components
+	unordered_map<string, unordered_map<string, string>> getParseTable() const {
+		return parse_table;
+	}
+
+	string getStartSymbol() const {
+		// Assuming the start symbol is the first production in the grammar
+		/*if (!productions.empty()) {
+			return productions.begin()->first;
+		}*/
+		return "program";
+	}
 };
 
+#endif

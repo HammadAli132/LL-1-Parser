@@ -134,6 +134,7 @@
     <ClCompile Include="leftrecursion.cpp" />
     <ClCompile Include="ll_1_parser.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="stringParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cfg1.txt" />
@@ -146,6 +147,7 @@
     <Text Include="cfg7.txt" />
     <Text Include="cfg8.txt" />
     <Text Include="cfg9.txt" />
+    <Text Include="input_strings.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cfg.h" />
@@ -153,6 +155,7 @@
     <ClInclude Include="leftrecursion.h" />
     <ClInclude Include="ll_1_parser.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="stringParser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

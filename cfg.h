@@ -1,32 +1,38 @@
-#pragma once
+#ifndef CFG_H
+#define CFG_H
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <unordered_map>
 #include "leftfactoring.h"
 #include "leftrecursion.h"
 #include "ll_1_parser.h"
-#include <iostream>
-#include <vector>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <unordered_map>
 
 using namespace std;
 
 class cfg {
 private:
-	leftfactoring *lfc;
-	leftrecursion *lfr;
-	ll_1_parser *parser;
 	string filename;
-	unordered_map<string, vector<vector<string>>> productions;
 	vector<string> production_lines;
-
-	void preprocessCFG();
-	void displayProductions(bool);
-	bool readFile();
+	unordered_map<string, vector<vector<string>>> productions;
+	leftfactoring* lfc;
+	leftrecursion* lfr;
+	ll_1_parser* parser;
 
 public:
 	cfg(string filename);
-	void build();
 	~cfg();
+
+	void preprocessCFG();
+	bool readFile();
+	void displayProductions(bool flag);
+	void build();
+
+	// New method to parse input strings
+	bool parseInputStrings(const string& input_filename);
 };
 
+#endif

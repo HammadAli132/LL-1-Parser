@@ -1,7 +1,24 @@
-S -> A | B
-A -> A a | A b | c
-B -> B b | B c | d
-C -> C c | C d | e
-D -> D d | D e | f
-E -> E e | E f | g
-F -> F f | F g | h
+program -> stmt_list
+
+stmt_list -> stmt stmt_list_tail
+stmt_list_tail -> stmt stmt_list_tail | ?
+
+stmt -> id_stmt | if_stmt | while_stmt | block
+
+id_stmt -> id = expr ;
+
+expr -> term expr_tail
+expr_tail -> + term expr_tail | - term expr_tail | ?
+term -> factor term_tail
+term_tail -> * factor term_tail | / factor term_tail | ?
+factor -> ( expr ) | id | num
+
+if_stmt -> if ( condition ) stmt else_part
+else_part -> else stmt | ?
+
+while_stmt -> while ( condition ) stmt
+
+condition -> expr rel_op expr
+rel_op -> == | != | < | > | <= | >=
+
+block -> { stmt_list }
